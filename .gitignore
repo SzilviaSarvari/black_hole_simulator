@@ -1,0 +1,25 @@
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# .NET build outputs
+**/bin/
+**/obj/
+
+# Test results
+TestResults/
+*.trx
+
+# Rider / VS Code
+.idea/
+.vscode/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Local secrets
+.env
+.env.*
