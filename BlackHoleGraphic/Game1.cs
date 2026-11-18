@@ -4,10 +4,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace BlackHoleGraphic
-{
-    // Particle-only accretion disk rendered through Schwarzschild null geodesics.
-    // One physical disk, multiple gravitationally lensed images; simplified optics.
+namespace BlackHoleGraphic {
+
     public class Game1 : Game
     {
         private const int WindowWidth = 1000;
@@ -15,27 +13,20 @@ namespace BlackHoleGraphic
         private const int ImageWidth = 720;
         private const int ImageHeight = 470;
 
-        // Elevation above the plane of the accretion disk.
-        // Lower = flatter apparent disk.
-        private const double ViewingElevation = 0.28; // radians, ~16 degrees
-        private const double DiskInnerRadius = 3.05;   // Schwarzschild radii
+        
+        private const double ViewingElevation = 0.28; // radians
+        private const double DiskInnerRadius = 3.05;   // Schwarzschild radius
         private const double DiskOuterRadius = 6.95;
         private const double MaxRayAngle = 5.0 * Math.PI;
         private const double RayStep = 0.035;
         private const double TimeScale = 0.65;
-
-        // Particles live in the ONE physical disk, not on screen-space arcs.
-        // Ray tracing projects this same density field into every lensed image.
         private const int ParticleCount = 8500;
-        // Higher resolution keeps the 8500 emitters separate instead of blurring them.
         private const int DensityResolution = 640;
-        // Radius of each luminous speck IN DISK SPACE, measured in Schwarzschild radii.
-        // This changes dot size, not the original ray-traced silhouette.
         private const float ParticleDotRadius = 0.032f;
         private const float DensityScale = (DensityResolution - 1f) / (float)(2.0 * DiskOuterRadius);
         private readonly Random _random = new Random(173);
         private DiskParticle[] _particles;
-        private float[] _particleDensity; // sparse, crisp particle stamp mask (not an accumulated glow)
+        private float[] _particleDensity;
 
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -82,7 +73,6 @@ namespace BlackHoleGraphic
             _blackHole = new BlackHole(10.0 * PhysicsConstants.SolarMass);
             _schwarzschildRadius = _blackHole.CalculateSchwarzschildRadius();
 
-            // Scale matches the previous view (around 45 pixels / Rs).
             _pixelsPerSchwarzschildRadius = _schwarzschildRadius / 650.0;
             _diskTexture = new Texture2D(GraphicsDevice, ImageWidth, ImageHeight, false, SurfaceFormat.Color);
             _framePixels = new Color[ImageWidth * ImageHeight];
@@ -110,21 +100,14 @@ namespace BlackHoleGraphic
                     double b = Math.Sqrt(screenX * screenX + screenY * screenY);
                     if (b < 0.0001) continue;
 
-                    // The photon travels in the plane spanned by the observer's
-                    // direction n and the normalized screen-offset direction p.
                     double pxUnit = screenX / b;
                     double pyUnit = screenY / b;
                     double pz = cosE * pyUnit;
                     double nz = sinE;
 
-                    // Intersections of this photon plane with the z=0 disk plane.
-                    // Multiple intersections are higher-order gravitational images
-                    // of the SAME physical disk, not extra disks.
                     double nextDiskCrossing = Math.Atan2(nz, -pz);
                     if (nextDiskCrossing <= 0) nextDiskCrossing += Math.PI;
 
-                    // Schwarzschild null geodesic: u'' + u = (3/2)u^2,
-                    // u = Rs/r, with impact parameter b in units of Rs.
                     double u = 0.0;
                     double du = 1.0 / b;
                     double angle = 0.0;
@@ -146,8 +129,6 @@ namespace BlackHoleGraphic
                                     double diskY = (-cosE * ca + sinE * pyUnit * sa) / u;
                                     double diskAngle = Math.Atan2(diskY, diskX);
 
-                                    // Local orbital velocity and approximate Doppler
-                                    // factor; central gravitational redshift included.
                                     double beta = Math.Sqrt(1.0 / Math.Max(0.01, 2.0 * (radius - 1.0)));
                                     beta = Math.Min(beta, 0.85);
                                     double towardObserver = -Math.Cos(diskAngle) * cosE;
@@ -172,7 +153,6 @@ namespace BlackHoleGraphic
                             continue;
                         }
 
-                        // Fourth-order Runge-Kutta integrates the photon orbit.
                         double k1u = du;
                         double k1v = -u + 1.5 * u * u;
                         double a2 = u + 0.5 * step * k1u;
@@ -191,9 +171,7 @@ namespace BlackHoleGraphic
                         du += step * (k1v + 2 * k2v + 2 * k3v + k4v) / 6.0;
                         angle += step;
 
-                        // Event horizon: the photon cannot escape to the observer.
                         if (u >= 1.0 || double.IsNaN(u) || double.IsInfinity(u)) break;
-                        // Escaped to infinity on the opposite side, without a hit.
                         if (u < 0.0) break;
                     }
 
@@ -208,7 +186,6 @@ namespace BlackHoleGraphic
             _particleDensity = new float[DensityResolution * DensityResolution];
             for (int i = 0; i < ParticleCount; i++)
             {
-                // Area-aware initial distribution, gently biased inward.
                 double u = _random.NextDouble();
                 double r = Math.Sqrt(DiskInnerRadius * DiskInnerRadius +
                     u * (DiskOuterRadius * DiskOuterRadius - DiskInnerRadius * DiskInnerRadius));
@@ -221,10 +198,6 @@ namespace BlackHoleGraphic
                 };
             }
         }
-
-        // Build a sparse emission mask of small, discrete circular specks.
-        // IMPORTANT: We do NOT modify PrecomputeRayMap(): the exact original
-        // silhouette, dark shadow, upper arc and lower lensed image are retained.
         private void RebuildParticleDensity()
         {
             Array.Clear(_particleDensity, 0, _particleDensity.Length);
@@ -257,7 +230,6 @@ namespace BlackHoleGraphic
                         float distanceSquared = dx * dx + dy * dy;
                         if (distanceSquared > radiusSquared) continue;
 
-                        // A hard, compact speck. No additive halos or bilinear blur.
                         float intensity = particle.Brightness *
                             (distanceSquared < radiusSquared * 0.28f ? 1f : 0.78f);
                         int index = y * DensityResolution + x;
@@ -289,7 +261,6 @@ namespace BlackHoleGraphic
             double dt = Math.Min(0.1, gameTime.ElapsedGameTime.TotalSeconds);
             _time += dt * TimeScale;
             _renderAccumulator += dt;
-            // A CPU-computed animated emission texture at 30 Hz.
             if (_renderAccumulator >= 1.0 / 30.0)
             {
                 double simulationDt = _renderAccumulator * TimeScale;
@@ -310,8 +281,7 @@ namespace BlackHoleGraphic
 
         private void RenderDisk()
         {
-            // Ray-hit UV coordinates are unchanged from the ORIGINAL renderer.
-            // Only the source of emitted light is now a sparse particle mask.
+
             for (int i = 0; i < _rayMap.Length; i++)
             {
                 RayHit hit = _rayMap[i];
@@ -342,7 +312,6 @@ namespace BlackHoleGraphic
                 byte red = (byte)(185 + 70 * heat);
                 byte green = (byte)(62 + 174 * heat);
                 byte blue = (byte)(10 + 118 * Math.Pow(heat, 2.5));
-                // Opaque illuminated dots; everything else is transparent/black.
                 _framePixels[i] = new Color(
                     (byte)(red * brightness),
                     (byte)(green * brightness),
