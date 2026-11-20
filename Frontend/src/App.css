@@ -1,0 +1,31 @@
+body {
+    margin: 0;
+    background: black;
+}
+
+.container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+}
+
+img {
+    width: 150px;
+}
+
+button {
+    background: black;
+    color: #ffd234;
+    border: 2px solid #ffd234;
+    padding: 15px 40px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+    button:hover {
+        background: #ffd234;
+        color: black;
+    }

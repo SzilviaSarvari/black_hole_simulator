@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackHoleSimulatorTest", "B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackHoleGraphic", "BlackHoleGraphic\BlackHoleGraphic.csproj", "{0DE2C3E3-33E0-4FA1-9C4A-F70FE88690F6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackHoleAndroid", "BlackHoleAndroid\BlackHoleAndroid.csproj", "{6B4D21BB-306B-78C6-44C4-DA55602245E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebPage", "WebPage\WebPage.csproj", "{0637BCC8-D14D-442B-903C-39B5BDCE2D64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,16 @@ Global
 		{0DE2C3E3-33E0-4FA1-9C4A-F70FE88690F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DE2C3E3-33E0-4FA1-9C4A-F70FE88690F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DE2C3E3-33E0-4FA1-9C4A-F70FE88690F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B4D21BB-306B-78C6-44C4-DA55602245E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B4D21BB-306B-78C6-44C4-DA55602245E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B4D21BB-306B-78C6-44C4-DA55602245E3}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{6B4D21BB-306B-78C6-44C4-DA55602245E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B4D21BB-306B-78C6-44C4-DA55602245E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B4D21BB-306B-78C6-44C4-DA55602245E3}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{0637BCC8-D14D-442B-903C-39B5BDCE2D64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0637BCC8-D14D-442B-903C-39B5BDCE2D64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0637BCC8-D14D-442B-903C-39B5BDCE2D64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0637BCC8-D14D-442B-903C-39B5BDCE2D64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
